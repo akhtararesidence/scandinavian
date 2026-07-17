@@ -1347,6 +1347,28 @@ function generateEventID() {
 
 function wa(cta, message){
 
+ // ====== Cegah klik lebih dari 1x dalam sehari ======
+const today = new Date().toISOString().slice(0,10);
+const lastLead = localStorage.getItem("lead_today");
+
+if(lastLead === today){
+    // Sudah pernah klik CTA hari ini
+    message = message || WA_MESSAGES[cta] || WA_MESSAGES.default;
+
+    const agent = nextAgent();
+
+    const url =
+        "https://wa.me/" +
+        agent.phone +
+        "?text=" +
+        encodeURIComponent(message);
+
+    window.open(url,"_blank","noopener,noreferrer");
+    return;
+}
+
+localStorage.setItem("lead_today", today);
+
     // Generate SATU Event ID saja
     const eventID = generateEventID();
 
